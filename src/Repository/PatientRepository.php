@@ -14,23 +14,43 @@ final class PatientRepository
     
     public function search(string $term = ''): array
     {
-        if ($term === '')
-            {
-                return $this->pdo->query(
-                    'SELECT * FROM patients ORDER BY last_name, first_name LIMIT 100'
-                )->fetchAll();
-            }
-            
-            $statement = $this->pdo->prepare(
-                'SELECT * FROM patients
-                WHERE document_number LIKE :term
-                OR first_name LIKE :term
-                OR last_name LIKE :term
+        // Eliminar espacios al inicio y al final.
+        // $term = trim($term);
+
+        // Si no hay término de búsqueda,
+        // listar hasta 100 pacientes.
+        if ($term === '') {
+            return $this->pdo->query(
+                'SELECT *
+                FROM patients
                 ORDER BY last_name, first_name
                 LIMIT 100'
-            );
-            $statement->execute(['term' => '%' . $term . '%']);
-            return $statement->fetchAll();
+            )->fetchAll();
+        }
+
+        // Cada signo ? representa un parámetro distinto.
+        $statement = $this->pdo->prepare(
+            'SELECT *
+            FROM patients
+            WHERE document_number LIKE ?
+                OR first_name LIKE ?
+                OR last_name LIKE ?
+            ORDER BY last_name, first_name
+            LIMIT 100'
+        );
+
+        // Los porcentajes permiten buscar coincidencias parciales.
+        // Por ejemplo: carlos encontrará "Carlos Andrés".
+        $value = '%' . $term . '%';
+
+        // Tenemos tres signos ?, por tanto enviamos tres valores.
+        $statement->execute([
+            $value,
+            $value,
+            $value,
+        ]);
+
+        return $statement->fetchAll();
     }
     
     public function findByDocument(string $document): ?array
