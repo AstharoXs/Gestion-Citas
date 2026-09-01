@@ -7,6 +7,7 @@ use App\Controller\AppointmentController;
 use App\Controller\AuthController;
 use App\Controller\DashboardController;
 use App\Controller\HealthController;
+use App\Controller\DoctorController;
 use App\Controller\PatientController;
 use App\Core\Database;
 use App\Core\Router;
@@ -47,6 +48,7 @@ try {
     
     $authController = new AuthController($users);
     $dashboardController = new DashboardController($patients, $appointments);
+    $doctorController = new DoctorController($doctors);
     $patientController = new PatientController($patients);
     $appointmentController = new AppointmentController(
         $patients,
@@ -66,6 +68,9 @@ try {
     $router->post('/logout', [$authController, 'logout']);
 
     $router->get('/', [$dashboardController, 'index']);
+
+    $router->get('/doctors', [$doctorController, 'index']);
+    $router->get('/doctors/create', [$doctorController, 'create']);
 
     $router->get('/patients', [$patientController, 'index']);
     $router->get('/patients/create', [$patientController, 'create']);
