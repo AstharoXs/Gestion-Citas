@@ -71,6 +71,7 @@ try {
 
     $router->get('/doctors', [$doctorController, 'index']);
     $router->get('/doctors/create', [$doctorController, 'create']);
+    $router->post('/doctors', [$doctorController, 'store']);
 
     $router->get('/patients', [$patientController, 'index']);
     $router->get('/patients/create', [$patientController, 'create']);

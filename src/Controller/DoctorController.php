@@ -20,12 +20,12 @@ final class DoctorController
     public function index(): void
     {
         Auth::requireLogin();
-        //$term = trim((string) ($_GET['q'] ?? ''));
+        $term = trim((string) ($_GET['q'] ?? ''));
         View::render('doctors/index',
         [
             'title' => 'Médicos',
-            //'doctors' => $this->doctors->search($term),
-            //'term' => $term,
+            'doctors' => $this->doctors->search($term),
+            'term' => $term,
         ]);
     }
 
@@ -34,7 +34,7 @@ final class DoctorController
         Auth::requireLogin();
         View::render('doctors/create',
         [
-            'title' => 'Registrar paciente',
+            'title' => 'Registrar Médico',
             'data' => [],
             'errors' => [],
         ]);
@@ -49,8 +49,8 @@ final class DoctorController
             'license_number' => strtoupper(trim((string) ($_POST['license_number'] ?? ''))),
             'first_name' => trim((string) ($_POST['first_name'] ?? '')),
             'last_name' => trim((string) ($_POST['last_name'] ?? '')),
-            'specialty' => strtoupper(trim((string) ($_POST['specialty'] ?? ''))),
-            'state' => strtoupper(trim((string) ($_POST['state'] ?? ''))),
+            'specialty' => trim((string) ($_POST['specialty'] ?? '')),
+            'active' => trim((string) ($_POST['active'] ?? '')),
         ];
         
         $errors = $this->validate($data);
@@ -61,7 +61,7 @@ final class DoctorController
             }
             try
             {
-                $this->patients->create($data);
+                $this->doctors->create($data);
             }
             catch (PDOException $exception)
             {
@@ -93,13 +93,13 @@ final class DoctorController
                     {
                         $errors['last_name'] = 'Ingrese apellidos de 2 a 80 caracteres.';
                     }
-                    if (!in_array($data['specialty'], ['A', 'I'], true))
+                    if (!in_array($data['specialty'], ['Medicina General', 'Cardiologia', 'Pediatria'], true))
                         {
                             $errors['specialty'] = 'Seleccione una opción válida.';
                         }
-                        if ($data['phone'] !== null && !preg_match('/^[0-9+()\s-]{7,30}$/', $data['phone']))
+                        if (!in_array($data['active'], ['1', '0'], true))
                             {
-                                $errors['phone'] = 'Ingrese un teléfono válido.';
+                                $errors['active'] = 'Seleccione una opción válida.';
                             }
                             return $errors;
         }

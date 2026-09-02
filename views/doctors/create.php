@@ -38,21 +38,21 @@
         <label for="specialty">Especialidad</label>
         <select id="specialty" name="specialty" required>
             <option value="">Seleccione</option>
-            <option value="MG" <?= ($data['specialty'] ?? '') === 'MG' ? 'selected' : '' ?>>Medicina General</option>
-            <option value="C" <?= ($data['specialty'] ?? '') === 'C' ? 'selected' : '' ?>>Cardiologia</option>
-            <option value="P" <?= ($data['specialty'] ?? '') === 'P' ? 'selected' : '' ?>>Pediatra</option>
+            <option value="Medicina General" <?= ($data['specialty'] ?? '') === 'Medicina General' ? 'selected' : 'F' ?>>Medicina General</option>
+            <option value="Cardiologia" <?= ($data['specialty'] ?? '') === 'Cardiologia' ? 'selected' : '' ?>>Cardiologia</option>
+            <option value="Pediatria" <?= ($data['specialty'] ?? '') === 'Pediatria' ? 'selected' : '' ?>>Pediatra</option>
         </select>
-        <?php if (isset($errors['sex'])): ?><small class="field-error"><?= e($errors['sex']) ?></small><?php endif; ?>
+        <?php if (isset($errors['specialty'])): ?><small class="field-error"><?= e($errors['specialty']) ?></small><?php endif; ?>
     </div>
 
     <div class="form-actions full-width">
-        <label for="state">Estado</label>
-        <select id="state" name="state" required>
+        <label for="active">Estado</label>
+        <select id="active" name="active" required>
             <option value="">Seleccione</option>
-            <option value="A" <?= ($data['state'] ?? '') === 'A' ? 'selected' : '' ?>>Activo</option>
-            <option value="I" <?= ($data['state'] ?? '') === 'I' ? 'selected' : '' ?>>Inactivo</option>
+            <option value="1" <?= ($data['active'] ?? '') === '1' ? 'selected' : '' ?>>Activo</option>
+            <option value="0" <?= ($data['active'] ?? '') === '0' ? 'selected' : '' ?>>Inactivo</option>
         </select>
-        <?php if (isset($errors['sex'])): ?><small class="field-error"><?= e($errors['sex']) ?></small><?php endif; ?>
+        <?php if (isset($errors['active'])): ?><small class="field-error"><?= e($errors['active']) ?></small><?php endif; ?>
     </div>
     
     <div class="form-actions full-width">
