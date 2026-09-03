@@ -20,6 +20,7 @@ use App\Repository\RoomRepository;
 use App\Repository\UserRepository;
 use App\Service\AppointmentService;
 
+//1. Carga configuracion del proyecto
 $config = require dirname(__DIR__) . '/bootstrap/app.php';
 
 header('X-Content-Type-Options: nosniff');
@@ -28,15 +29,18 @@ header('Referrer-Policy: strict-origin-when-cross-origin');
 header("Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; base-uri 'self'; frame-ancestors 'none'; form-action 'self'");
 
 try {
+    //2. Crear conexion y obtener PDO
     $database = new Database($config['database']);
     $pdo = $database->pdo();
     
+    //3. Crear repositorios
     $users = new UserRepository($pdo);
     $patients = new PatientRepository($pdo);
     $doctors = new DoctorRepository($pdo);
     $rooms = new RoomRepository($pdo);
     $appointments = new AppointmentRepository($pdo);
 
+    //4. Crear servivios
     $appointmentService = new AppointmentService(
         $database,
         $appointments,
@@ -46,6 +50,7 @@ try {
         $config['appointments']
     );
     
+    //5. Crear controladores
     $authController = new AuthController($users);
     $dashboardController = new DashboardController($patients, $appointments);
     $doctorController = new DoctorController($doctors);
@@ -60,7 +65,10 @@ try {
     $apiController = new ApiController($appointmentService);
     $healthController = new HealthController($pdo);
 
+    //6. Crear Router con la ruta base del proyecto
     $router = new Router($config['base_path']);
+
+    //7. Registrar rutas
     $router->get('/health', [$healthController, 'show']);
 
     $router->get('/login', [$authController, 'showLogin']);
@@ -85,6 +93,8 @@ try {
     $router->post('/appointments/{id}/complete', [$appointmentController, 'complete']);
 
     $router->get('/api/availability', [$apiController, 'availability']);
+
+    //8. Procesar la solicitud actual
     $router->dispatch($_SERVER['REQUEST_METHOD'] ?? 'GET', $_SERVER['REQUEST_URI'] ?? '/');
 }
 catch (Throwable $exception)
