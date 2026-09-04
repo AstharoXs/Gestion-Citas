@@ -10,14 +10,14 @@
     <select id="specialty" name="specialty" required>
         <option value="">Seleccione</option>
         <option value="Medicina General" <?= ($data['specialty'] ?? '') === 'Medicina General' ? 'selected' : '' ?>>Médicina General</option>
-        <option value="Cardiologia" <?= ($data['specialty'] ?? '') === 'M' ? 'Cardiologia' : '' ?>>Cardiologia</option>
-        <option value="Pediatria" <?= ($data['specialty'] ?? '') === 'O' ? 'Pediatria' : '' ?>>Pediatria</option>
+        <option value="Cardiologia" <?= ($data['specialty'] ?? '') === 'Cardiologia' ? 'selected' : '' ?>>Cardiologia</option>
+        <option value="Pediatria" <?= ($data['specialty'] ?? '') === 'Pediatria' ? 'selected' : '' ?>>Pediatria</option>
     </select>
     <label for="active">Estado</label>  
     <select id="active" name="active" required>
         <option value="">Seleccione</option>
-        <option value="Activo" <?= ($data['active'] ?? '') === 'Medicina General' ? 'selected' : '' ?>>Activo</option>
-        <option value="Inactivo" <?= ($data['active'] ?? '') === 'M' ? 'Cardiologia' : '' ?>>Inactivo</option>
+        <option value="1" <?= ($data['active'] ?? '') === 'Activo' ? 'selected' : '' ?>>Activo</option>
+        <option value="0" <?= ($data['active'] ?? '') === 'Inactivo' ? 'selected' : '' ?>>Inactivo</option>
     </select>
     <a class="button secondary" href="<?= e(url('/doctors')) ?>">Cancelar</a>
     <button class="button primary" type="submit">Actualizar médico</button>

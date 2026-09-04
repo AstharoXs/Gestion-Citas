@@ -102,7 +102,7 @@ final class DoctorController
                                 $errors['active'] = 'Seleccione una opción válida.';
                             }
                             return $errors;
-        }
+    }
 
         public function edit(int $id): void
         {

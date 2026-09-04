@@ -106,7 +106,7 @@ final class DoctorRepository
             first_name = :first_name,
             last_name = :last_name,
             specialty = :specialty,
-            active = :active,
+            active = :active
             WHERE id = :id'
         );
     
