@@ -103,4 +103,114 @@ final class DoctorController
                             }
                             return $errors;
         }
+
+        public function edit(int $id): void
+        {
+            Auth::requireLogin();
+
+            $doctor = $this->doctors->findById($id);
+
+            if ($doctor === null) {
+                http_response_code(404);
+                echo 'Médico no encontrado.';
+                return;
+            }
+
+            View::render('doctors/edit', [
+                'title' => 'Editar médico',
+                'data' => $doctor,
+                'errors' => [],
+            ]);
+        }
+
+        public function update(int $id): void
+        {
+            Auth::requireLogin();
+
+           Csrf::requireValid($_POST['_token']?? null);
+
+           $doctor = $this->doctors->findById($id);
+
+           if($doctor === null) {
+               http_response_code(404);
+               echo 'Médico no encontrado.';
+               return;
+            }
+            
+            $data = [
+                'license_number' => strtoupper(trim((string) ($_POST['license_number'] ?? ''))),
+                'first_name' => trim((string) ($_POST['first_name'] ?? '')),
+                'last_name' => trim((string) ($_POST['last_name'] ?? '')),
+                'specialty' => trim((string) ($_POST['specialty'] ?? '')),
+                'active' => trim((string) ($_POST['active'] ?? '')),
+            ];
+
+           $errors = $this->validate($data);
+
+            if ($errors !== []) {
+                View::render('doctors/edit', [
+                    'title' => 'Editar médico',
+                    'data' => $data,
+                    'errors' => $errors,
+                ]);
+                return;
+            }
+
+            try {
+                $this->doctors->update($id, $data);
+            } catch (PDOException $exception) {
+
+                if ($exception->getCode() === '23000') {
+                    $errors['license_number'] =
+                        'Ya existe otro médico con esa licencia.';
+               
+                    View::render('doctors/edit', [
+                        'title' => 'Editar médico',
+                        'data' => $data,
+                        'errors' => $errors,
+                    ]);
+                    return;
+                }
+
+                throw $exception;
+            }
+
+            flash('success', 'Médico actualizado correctamente.');
+
+            redirect('/doctors');
+
+        }
+
+        public function delete(int $id): void
+        {
+            Auth::requireLogin();
+            Csrf::requireValid($_POST['_token'] ?? null);
+
+            $doctor = $this->doctors->findById($id);
+
+            if ($doctor === null) {
+                http_response_code(404);
+                echo 'Médico no encontrado.';
+                return;
+            }
+
+            try {
+                $this->doctors->delete($id);
+                flash('success', 'Médico eliminado correctamente.');
+                redirect('/doctors');
+
+                } catch (PDOException $exception) {
+                if ($exception->getCode() === '23000') {
+                    flash(
+                        'error',
+                        'No se puede eliminar el médico porque tiene información relacionada.'
+                    );
+                    redirect('/doctors');
+                    return;
+                }
+
+                throw $exception;
+                }
+        }
+    
 }

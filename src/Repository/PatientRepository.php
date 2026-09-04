@@ -117,4 +117,16 @@ final class PatientRepository
             'email' => $data['email'],
         ]);
     }
+
+    public function delete(int $id): bool
+    {
+        $statement = $this->pdo->prepare(
+            'DELETE FROM patients
+            WHERE id = :id'
+        );
+
+        return $statement->execute([
+            'id' => $id
+        ]);
+    }
 }

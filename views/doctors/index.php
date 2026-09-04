@@ -20,6 +20,8 @@
                 <th>Médico</th>
                 <th>Especialidad</th>
                 <th>Estado</th>
+                <th>Opción</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -29,6 +31,15 @@
                     <td><?= e($doctor['first_name'] . ' ' . $doctor['last_name']) ?></td>
                     <td><?= e($doctor['specialty']) ?></td>
                     <td><?= e($doctor['active'] == 1 ? 'Activo' : 'Inactivo') ?></td>
+                    <th>
+                        <a class="button secondary" href="<?= e(url('/doctors/'. $doctor['id'].'/edit'))?>">Editar</a>
+                    </th>
+                    <td>
+                        <form method="POST" action="<?= e(url('/doctors/' . $doctor['id'] . '/delete')) ?>" style="display:inline;" data-confirm='¿Está seguro de eliminar este médico?'>
+                            <?= csrf_field() ?>
+                            <button type="submit" class="button danger">Eliminar</button>
+                        </form>
+                    </td>
                 </tr>
             <?php endforeach; ?>
             <?php if ($doctors === []): ?>

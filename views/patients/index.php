@@ -20,6 +20,8 @@
                 <th>Paciente</th>
                 <th>Nacimiento</th>
                 <th>Contacto</th>
+                <th>Opción</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -29,6 +31,15 @@
                     <td><?= e($patient['first_name'] . ' ' . $patient['last_name']) ?></td>
                     <td><?= e(format_date($patient['birth_date'])) ?></td>
                     <td><?= e($patient['phone'] ?: $patient['email'] ?: 'Sin dato') ?></td>
+                    <th>
+                        <a class="button secondary" href="<?= e(url('/patients/'. $patient['id'].'/edit'))?>">Editar</a>
+                    </th>
+                    <td>
+                        <form method="POST" action="<?= e(url('/patients/' . $patient['id'] . '/delete')) ?>" style="display:inline;" data-confirm='¿Está seguro de eliminar este paciente?'>
+                            <?= csrf_field() ?>
+                            <button type="submit" class="button danger">Eliminar</button>
+                        </form>
+                    </td>
                 </tr>
             <?php endforeach; ?>
             <?php if ($patients === []): ?>
