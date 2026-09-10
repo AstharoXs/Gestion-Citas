@@ -20,6 +20,7 @@
                 <th>Paciente</th>
                 <th>Nacimiento</th>
                 <th>Contacto</th>
+                <th>Estado</th>
                 <th>Opción</th>
                 <th>Acciones</th>
             </tr>
@@ -31,6 +32,7 @@
                     <td><?= e($patient['first_name'] . ' ' . $patient['last_name']) ?></td>
                     <td><?= e(format_date($patient['birth_date'])) ?></td>
                     <td><?= e($patient['phone'] ?: $patient['email'] ?: 'Sin dato') ?></td>
+                    <td><?= e($patient['active'] == 1 ? 'Activo' : 'Inactivo') ?></td>
                     <th>
                         <a class="button secondary" href="<?= e(url('/patients/'. $patient['id'].'/edit'))?>">Editar</a>
                     </th>

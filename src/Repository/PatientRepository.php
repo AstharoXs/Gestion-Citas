@@ -32,24 +32,25 @@ final class PatientRepository
         $statement = $this->pdo->prepare(
             'SELECT *
             FROM patients
-            WHERE document_number LIKE ?
-                OR first_name LIKE ?
-                OR last_name LIKE ?
+            WHERE document_number LIKE :document_term
+                OR first_name LIKE :first_term
+                OR last_name LIKE :last_term
+                OR phone LIKE :phone_term
+                OR active LIKE :active_term
+                OR concat(first_name," ", last_name) LIKE :full_term
             ORDER BY last_name, first_name
             LIMIT 100'
         );
 
-        // Los porcentajes permiten buscar coincidencias parciales.
-        // Por ejemplo: carlos encontrará "Carlos Andrés".
-        $value = '%' . $term . '%';
-
-        // Tenemos tres signos ?, por tanto enviamos tres valores.
+        $likeTerm = '%'.$term.'%';
         $statement->execute([
-            $value,
-            $value,
-            $value,
+            'document_term' => $term,
+            'first_term' => $term,
+            'last_term' => $term,
+            'phone_term' => $term,
+            'active_term' => $term,
+            'full_term' => $term,
         ]);
-
         return $statement->fetchAll();
     }
     
@@ -67,9 +68,9 @@ final class PatientRepository
     {
         $statement = $this->pdo->prepare(
             'INSERT INTO patients
-            (document_type, document_number, first_name, last_name, birth_date, sex, phone, email)
+            (document_type, document_number, first_name, last_name, birth_date, sex, phone, email, active)
             VALUES
-            (:document_type, :document_number, :first_name, :last_name, :birth_date, :sex, :phone, :email)'
+            (:document_type, :document_number, :first_name, :last_name, :birth_date, :sex, :phone, :email, :active)'
         );
         $statement->execute($data);
         return (int) $this->pdo->lastInsertId();
@@ -101,7 +102,8 @@ final class PatientRepository
             birth_date = :birth_date,
             sex = :sex,
             phone = :phone,
-            email = :email
+            email = :email,
+            active = :active
             WHERE id = :id'
         );
     
@@ -115,6 +117,7 @@ final class PatientRepository
             'sex' => $data['sex'],
             'phone' => $data['phone'],
             'email' => $data['email'],
+            'active' => $data['active'],
         ]);
     }
 

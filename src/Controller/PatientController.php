@@ -119,6 +119,10 @@ final class PatientController
                                     {
                                         $errors['email'] = 'Ingrese un correo válido.';
                                     }
+                                    if (!in_array($data['active'], ['1', '0'], true))
+                                        {
+                                            $errors['active'] = 'Seleccione una opción válida.';
+                                        }
                                     return $errors;
     }
 
@@ -164,6 +168,7 @@ final class PatientController
             'sex' => strtoupper(trim((string) ($_POST['sex'] ?? ''))),
             'phone' => trim((string) ($_POST['phone'] ?? '')) ?: null,
             'email' => mb_strtolower(trim((string) ($_POST['email'] ?? ''))) ?: null,
+            'active' => trim((string) ($_POST['active'] ?? '')),
         ];
         
         $errors = $this->validate($data);

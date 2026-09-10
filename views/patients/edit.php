@@ -29,6 +29,13 @@
     <input id="phone" name="phone" value="<?= e($data['phone'] ?? '') ?>">
     <label for="email">Correo</label>
     <input id="email" name="email" type="email" value="<?= e($data['email'] ?? '') ?>">
+    
+    <label for="active">Estado</label>  
+    <select id="active" name="active" required>
+        <option value="">Seleccione</option>
+        <option value="1" <?= ($data['active'] ?? '') === 'Activo' ? 'selected' : '' ?>>Activo</option>
+        <option value="0" <?= ($data['active'] ?? '') === 'Inactivo' ? 'selected' : '' ?>>Inactivo</option>
+    </select>
     <a class="button secondary" href="<?= e(url('/patients')) ?>">Cancelar</a>
     <button class="button primary" type="submit">Actualizar paciente</button>
 </form>

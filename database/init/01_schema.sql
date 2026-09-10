@@ -26,6 +26,7 @@ CREATE TABLE patients
     sex ENUM('F', 'M', 'O') NOT NULL,
     phone VARCHAR(30) NULL,
     email VARCHAR(150) NULL,
+    active ENUM('1', '0') NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX idx_patients_name (last_name, first_name)

@@ -85,6 +85,16 @@
         <input id="email" name="email" type="email" maxlength="150" value="<?= e($data['email'] ?? '') ?>">
         <?php if (isset($errors['email'])): ?><small class="field-error"><?= e($errors['email']) ?></small><?php endif; ?>
     </div>
+
+    <div class="form-actions full-width">
+        <label for="active">Estado</label>
+        <select id="active" name="active" required>
+            <option value="">Seleccione</option>
+            <option value="1" <?= ($data['active'] ?? '') === 'Activo' ? 'selected' : '' ?>>Activo</option>
+            <option value="0" <?= ($data['active'] ?? '') === 'Inactivo' ? 'selected' : '' ?>>Inactivo</option>
+        </select>
+        <?php if (isset($errors['active'])): ?><small class="field-error"><?= e($errors['active']) ?></small><?php endif; ?>
+    </div>
     
     <div class="form-actions full-width">
         <a class="button secondary" href="<?= e(url('/patients')) ?>">Cancelar</a>
