@@ -20,12 +20,28 @@ final class DoctorController
     public function index(): void
     {
         Auth::requireLogin();
+
         $term = trim((string) ($_GET['q'] ?? ''));
+
+        $perPage = 10;
+        $page = (int) ($_GET['page'] ?? 1);
+        if ($page < 1) {
+            $page = 1;
+        }
+
+        $result = $this->doctors->search($term, $page, $perPage);
+        $total = $result['total'];
+        $totalPages = $total > 0 ? (int) ceil($total / $perPage) : 1;
+
         View::render('doctors/index',
         [
-            'title' => 'Médicos',
-            'doctors' => $this->doctors->search($term),
+            'title' => 'Medicos',
+            'doctors' => $result['items'],
             'term' => $term,
+            'page' => $page,
+            'perPage' => $perPage,
+            'total' => $total,
+            'totalPages' => $totalPages,
         ]);
     }
 

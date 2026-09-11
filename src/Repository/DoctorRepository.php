@@ -12,42 +12,50 @@ final class DoctorRepository
     {
     }
     
-    public function search(string $term = ''): array
+    public function search(string $term, int $page = 1, int $perPage = 10): array
     {
-        // Eliminar espacios al inicio y al final.
-        // $term = trim($term);
+        $page = max(1, $page);
+        $perPage = max(1, $perPage);
+        $offset = ($page - 1) * $perPage;
 
-        // Si no hay término de búsqueda,
-        // listar hasta 100 médicos.
-        if ($term === '') {
-            return $this->pdo->query(
-                'SELECT *
-                FROM doctors
-                ORDER BY last_name, first_name
-                LIMIT 100'
-            )->fetchAll();
+        $where = '';
+        $params = [];
+
+        if ($term !== '') {
+            $where = 'WHERE license_number LIKE :license_term'
+                . ' OR first_name LIKE :first_term'
+                . ' OR last_name LIKE :last_term';
+
+            $like = '%' . $term . '%';
+            $params = [
+                'license_term' => $like,
+                'first_term' => $like,
+                'last_term' => $like,
+            ];
         }
 
-        // Cada signo ? representa un parámetro distinto.
-        $statement = $this->pdo->prepare(
-            'SELECT *
-            FROM doctors
-            WHERE license_number LIKE :license_term
-                OR first_name LIKE :first_term
-                OR last_name LIKE :last_term
-                OR concat(first_name," ", last_name) LIKE :full_term
-            ORDER BY last_name, first_name
-            LIMIT 100'
-        );
+        $countStmt = $this->pdo->prepare("SELECT COUNT(*) FROM doctors {$where}");
+        $countStmt->execute($params);
+        $total = (int) $countStmt->fetchColumn();
 
-        $likeTerm = '%'.$term.'%';
-        $statement->execute([
-            'license_term' => $term,
-            'first_term' => $term,
-            'last_term' => $term,
-            'full_term' => $term,
-        ]);
-        return $statement->fetchAll();
+        $sql = "SELECT * FROM doctors {$where}"
+            . ' ORDER BY last_name, first_name'
+            . ' LIMIT :limit OFFSET :offset';
+
+        $stmt = $this->pdo->prepare($sql);
+
+        foreach ($params as $name => $value) {
+            $stmt->bindValue(':' . $name, $value, PDO::PARAM_STR);
+        }
+
+        $stmt->bindValue(':limit', $perPage, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return [
+            'items' => $stmt->fetchAll(),
+            'total' => $total,
+        ];
     }
 
     public function active(): array
