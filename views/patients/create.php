@@ -90,8 +90,8 @@
         <label for="active">Estado</label>
         <select id="active" name="active" required>
             <option value="">Seleccione</option>
-            <option value="1" <?= ($data['active'] ?? '') === 'Activo' ? 'selected' : '' ?>>Activo</option>
-            <option value="0" <?= ($data['active'] ?? '') === 'Inactivo' ? 'selected' : '' ?>>Inactivo</option>
+            <option value="1" <?= ($data['active'] ?? '') === '1' ? 'selected' : '' ?>>Activo</option>
+            <option value="0" <?= ($data['active'] ?? '') === '0' ? 'selected' : '' ?>>Inactivo</option>
         </select>
         <?php if (isset($errors['active'])): ?><small class="field-error"><?= e($errors['active']) ?></small><?php endif; ?>
     </div>
