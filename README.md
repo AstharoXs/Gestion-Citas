@@ -35,3 +35,4 @@ composer test
 
 ## Estado y privacidad
 Proyecto académico, no destinado a uso clínico real. Utiliza exclusivamente datos ficticios. No publiques archivos .env con credenciales. La ejecución y las pruebas no se han validado en un entorno limpio.
+.
